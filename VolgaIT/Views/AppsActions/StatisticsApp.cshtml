@@ -1,0 +1,54 @@
+@using VolgaIT.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model StatisticsAppViewModel
+@{
+    Layout = "_LayoutUser";
+}
+
+<section class="statistics-app">
+    <div class="info-app">
+        <h1 class="display-1">Приложение: @Model.App.Name</h1>
+        <p class="id-app">Id:@Model.App.Id</p>
+    </div>
+    <div class="statistics-app-info">
+        <div class="diagram-command">
+            <div class="diagram-header">
+                <h2 class="display-2">Действия пользователей</h2>
+                <form>
+                    <input name="id" hidden asp-for="@Model.App.Id" id="id"/>
+                    <select class="form-select" name="timeInterval" id="datafiltertime">
+                        <option value="week">Неделя</option>
+                        <option value="month">Месяц</option>
+                        <option value="year">Год</option>
+                    </select>
+                    <div id="eventContainer">
+                        @Html.Partial("PartialTableStat")
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<script>  
+        $(function () {
+            $("#datafiltertime").change(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/AppsActions/TimeFilter",  //remember change the controller to your owns.  
+                    data: {timeFilter: $(this).val(), id: $("#id").val()},
+                    success: function (data) {
+                        $("#eventContainer").html("");
+                        $("#eventContainer").html(data);
+                    },
+                    error: function (response) {
+                        console.log(response.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+
+}

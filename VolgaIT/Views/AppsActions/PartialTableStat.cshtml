@@ -1,0 +1,10 @@
+@model StatisticsAppViewModel
+
+
+@foreach(Event item in Model.Events)
+{
+    List<RequestUser> allRequest = Model.RequestUsers;
+    int countRequestUsers = allRequest.Where(x => x.Event.Name == item.Name).Count();
+
+    <p class="command-info">@item.Name - @countRequestUsers</p>                    
+}
