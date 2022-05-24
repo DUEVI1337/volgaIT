@@ -33,6 +33,9 @@ namespace VolgaIT.Controllers
         public async Task<IActionResult> ListApp()
         {
             var user = await _userService.GetUserAsync();
+            var appAll = await _appService.GetAllAppsAsync();
+            var userApps = appAll.Where(x=>x.Id == user.UsersApps.ToList().ForEach(x=>x.AppsId));
+            //var userApps = new List<App>(await _appService.GetAllUserApp(user.Id)); 
             return View(user.UsersApps.ToList());
         }
 
@@ -58,6 +61,7 @@ namespace VolgaIT.Controllers
                     await _appService.AddAppAsync(model);
                     await _userAppsService.AddUserAppAsync(model.AppId, user.Id);
                     result = "Приложение добавлено";
+                    return RedirectToAction("AddUserApp", new { result = result});
                 }
                 catch
                 {
@@ -84,7 +88,7 @@ namespace VolgaIT.Controllers
                     }
                 }
             }
-            return View(model: result);
+            return View();
         }
 
         #endregion

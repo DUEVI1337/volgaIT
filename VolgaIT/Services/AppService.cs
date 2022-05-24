@@ -13,16 +13,21 @@ namespace VolgaIT.Services
             _repoApp = repoApp;
         }
 
+        public async Task<List<App>> GetAllAppsAsync()
+        {
+            return await _repoApp.GetAllAppAsync();
+        }
+
+        //public async Task<List<App>> GetAllUserApp(string userId)
+        //{
+        //    var userApps = await _repoApp.GetAllUserApp(userId);
+        //}
+
         public async Task AddAppAsync(AddAppViewModel model)
         {
             var app = new App() {Id = model.AppId, Name = model.AppName };
             await _repoApp.AddAppAsync(app);
             await _repoApp.SaveAsync();
-        }
-
-        public async Task<List<App>> GetAllAppsAsync()
-        {
-            return await _repoApp.GetAllAppAsync();
         }
     }
 }

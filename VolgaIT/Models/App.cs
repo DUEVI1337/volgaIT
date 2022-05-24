@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VolgaIT.Models
 {
-    [Index(nameof(Name), IsUnique = true)] //name теперь уникально
+    [Index(nameof(Name), IsUnique = true)]
     public class App
     {
         [Key]

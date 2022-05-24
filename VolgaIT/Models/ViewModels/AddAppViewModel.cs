@@ -4,9 +4,9 @@ namespace VolgaIT.Models.ViewModels
 {
     public class AddAppViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Это поле не может быть пустым")]
         public string AppId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Это поле не может быть пустым")]
         public string AppName { get; set; }
     }
 }
