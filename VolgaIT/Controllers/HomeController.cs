@@ -12,7 +12,7 @@ namespace VolgaIT.Controllers
         [HttpGet]
         public IActionResult Index()      
         {
-            if (!User.Identity.IsAuthenticated) //если авторизованный пользователь пытается перейти на главную страницу сайта, то его будет переадресовывать на главную страницу для пользователя 
+            if (!User.Identity.IsAuthenticated)
             {
                 return View();
             }

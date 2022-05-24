@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VolgaIT.Models;
-using VolgaIT.Services;
+using VolgaIT.Services.Interface;
 
 namespace VolgaIT.Controllers
 {
@@ -10,13 +9,11 @@ namespace VolgaIT.Controllers
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true, Duration = 0)]
     public class PasswordController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IPasswordService _passwordService;
 
-        public PasswordController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public PasswordController(IPasswordService passwordService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _passwordService = passwordService;
         }
 
         [HttpGet]
@@ -27,28 +24,26 @@ namespace VolgaIT.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model) //отправка письма на почту, для восстановления пароля
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            if (ModelState.IsValid) //проверка модели
+            if (ModelState.IsValid)
             {
-                IdentityUser user = await _userManager.FindByEmailAsync(model.Email); //ищем пользователя по указанному email 
-                if (user != null) 
+                var result = await _passwordService.GenerateTokenPasswordResetAsync(model);
+                if(result == null)
                 {
-                    var code = await _userManager.GeneratePasswordResetTokenAsync(user); //генерация токена сброса пароля для найденного пользователя
-                    DateTime lifeTime = DateTime.Now.AddMinutes(20); //время жизни ссылки
-                    var callbackUrl = Url.Action("NewPassword", "Password", new { Email = user.Email, Token = code, lifeTime = lifeTime }, protocol: HttpContext.Request.Scheme); //генерация ссылки
-                    EmailServices emailServices = new EmailServices();
-                    await emailServices.SendEmailAsync(user.Email, "Восстановление Пароля", $"Для того чтобы создать новый пароль перейдите по <a href='{callbackUrl}'>ссылке</a>"); //отправка письма на email
+                    return RedirectToAction("SignIn", "Account");
                 }
+                var callbackUrl = Url.Action("NewPassword", "Password", new { Email = model.Email, Token = result, lifeTime = DateTime.Now.AddMinutes(20) }, protocol: HttpContext.Request.Scheme);
+                await _passwordService.SendEmailResetPassword(model.Email, callbackUrl);
                 return RedirectToAction("SignIn", "Account");
             }
             return View();
         }
 
         [HttpGet]
-        public async Task<IActionResult> NewPassword(ResetPasswordViewModel model, DateTime lifeTime)
+        public IActionResult NewPassword(ResetPasswordViewModel model, DateTime lifeTime)
         {
-            if (lifeTime >= DateTime.Now) //проверяем время жизни ссылки
+            if (lifeTime >= DateTime.Now)
             {
                 return View(model);
             }
@@ -57,12 +52,11 @@ namespace VolgaIT.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model) //создание нового пользователя
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user = await _userManager.FindByEmailAsync(model.Email); //ищем пользователя по email 
-                await _userManager.ResetPasswordAsync(user, model.Token, model.Password); //сбрасываеи и задаем новый пароль для пользователя
+                await _passwordService.ResetPasswordAsync(model);
                 return RedirectToAction("SignIn", "Account");
 
             }

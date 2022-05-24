@@ -6,7 +6,7 @@
 
 <section class="register-container">
     <h1 class="display-1">Регистрация</h1>
-    <form method="post" asp-controller="Account" class="register-form">
+    <form method="post" asp-controller="Account" asp-action="Register" class="register-form">
         <div class="input-register-container">
             <input type="text" placeholder="Email" asp-for="Email" class="input-register"/>
             <span asp-validation-for="Email" class="register-valid"></span>
@@ -20,6 +20,6 @@
             <span asp-validation-for="PasswordConfirm" class="register-valid"></span>
         </div>
         <div asp-validation-summary="ModelOnly" class="valid-register-model"></div>
-        <input type="submit" value="Регистрация" class="input-btn-register" asp-action="Register"/>
+        <input type="submit" value="Регистрация" class="input-btn-register"/>
     </form>
 </section>

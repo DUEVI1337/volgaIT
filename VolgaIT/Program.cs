@@ -1,6 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VolgaIT.Data;
+using VolgaIT.Data.Repository;
+using VolgaIT.Data.Repository.Interface;
+using VolgaIT.Data.Repository0;
+using VolgaIT.Models;
+using VolgaIT.Services;
+using VolgaIT.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ConnectionString");
@@ -9,9 +15,10 @@ var connectionString = builder.Configuration.GetConnectionString("ConnectionStri
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DataContext>(opt =>
 {
-    opt.UseNpgsql(connectionString);
+    //opt.UseNpgsql(connectionString);
+    opt.UseSqlServer(connectionString);
 });
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt=>
+builder.Services.AddIdentity<User, IdentityRole>(opt=>
 {
     opt.User.RequireUniqueEmail = true;
     opt.Password.RequireDigit = false;
@@ -19,8 +26,16 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt=>
     opt.Password.RequireUppercase = false;
     opt.Password.RequireNonAlphanumeric = false;
     opt.Password.RequireLowercase = false;
-}).AddEntityFrameworkStores<DataContext>().AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
-builder.Services.AddScoped<DataContext>();
+}).AddEntityFrameworkStores<DataContext>().AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IAccountService,AccountService>()
+                .AddScoped<IPasswordService, PasswordService>()
+                .AddScoped<IUserService, UserService>()
+                .AddScoped<IAppService, AppService>()
+                .AddScoped<IUserAppsService, UserAppsService>()
+                .AddScoped<IUserAppsRepository, UserAppsRepository>()
+                .AddScoped<IAppRepository, AppRepository>()
+                .AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
@@ -49,10 +64,6 @@ using (var scope = app.Services.CreateScope())
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var context = scope.ServiceProvider.GetRequiredService<DataContext>();
     await DataBaseInit.InitDataBase(roleManager, context);
-    //if(context.Database.GetPendingMigrations().Any())
-    //{
-    //    context.Database.Migrate();
-    //}
 }
 
 app.Run();

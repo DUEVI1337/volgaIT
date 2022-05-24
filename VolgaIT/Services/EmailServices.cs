@@ -7,7 +7,7 @@ namespace VolgaIT.Services
     {
         public async Task SendEmailAsync(string emailUser, string subject, string message)
         {
-            var emailMessage = new MimeMessage(); // отправляемое осообщение 
+            var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("VolgaIt", "volgaitegor@gmail.com"));
             emailMessage.To.Add(new MailboxAddress ("", emailUser));
             emailMessage.Subject = subject;

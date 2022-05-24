@@ -2,80 +2,77 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using VolgaIT.Data;
 using VolgaIT.Models;
+using VolgaIT.Models.ViewModels;
+using VolgaIT.Services.Interface;
 
 namespace VolgaIT.Controllers
 {
     [Authorize(Roles = "user")]
     public class UserActionsController : Controller
     {
-        private DataContext _db;
-        private UserManager<IdentityUser> _userManager;
-        private SignInManager<IdentityUser> _signInManager;
-        private List<App> _apps = new List<App>();
-        private List<App> _userApps = new List<App>();
+        private readonly IUserService _userService;
+        private readonly IAppService _appService;
+        private readonly IUserAppsService _userAppsService;
 
-        public UserActionsController(DataContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public UserActionsController(IUserService userService, IUserAppsService userAppsService, IAppService appService)
         {
-            _db = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _apps = _db.Apps.ToList();
-        }
+            _userService = userService;
+            _userAppsService = userAppsService;
+            _appService = appService;
+         }
 
         [HttpGet]
         public async Task<IActionResult> MainPageUser()
         {
-            _userApps = await GetUserListAppAsync(); //получем приложения пользователя
-            return View(_userApps.Count); //выводим кол-во приложения на глваной странице
+            var user = await _userService.GetUserAsync();
+            return View(user.UsersApps.Count());
         }
 
         [HttpGet]
         public async Task<IActionResult> ListApp()
         {
-            return View(await GetUserListAppAsync()); //выводи список приложений
+            var user = await _userService.GetUserAsync();
+            return View(user.UsersApps.ToList());
         }
 
         #region [AddApp]
         [HttpGet]
-        public IActionResult AddApp(string result)
+        public IActionResult AddUserApp(string result)
         {
-            App app = new App { Id = Guid.NewGuid().ToString() }; //генерируем id для приложения и предлогаем его пользователю по умолчанию
+            var model = new AddAppViewModel { AppId = Guid.NewGuid().ToString() };
             ViewBag.result = result;
-            return View(app);
+            return View(model);
         }
 
         [HttpPost]
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true, Duration = 0)]
-        public async Task<IActionResult> AddApp(App app) //создание приложения
+        public async Task<IActionResult> AddUserApp(AddAppViewModel model)
         {
             string result = "";
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User); //получем текущего пользователя
                 try
                 {
-                    UserApps userApps = new UserApps { AppId = app.Id, UserId = user.Id };
-                    await _db.Apps.AddAsync(app); //добавлем приложение в бд
-                    await _db.UserApps.AddAsync(userApps);
-                    await _db.SaveChangesAsync();
-                    result = "Приложение добавлено"; //результат создания
-                    return RedirectToAction("AddApp", new { result = result });
+                    var user = await _userService.GetUserAsync();
+                    await _appService.AddAppAsync(model);
+                    await _userAppsService.AddUserAppAsync(model.AppId, user.Id);
+                    result = "Приложение добавлено";
                 }
-                catch //если приложение не удалось создать
+                catch
                 {
-                    if (_apps.Select(x => x.Name).Contains(app.Name))
+                    var allApps = await _appService.GetAllAppsAsync();
+                    if (allApps.Select(x => x.Name).Contains(model.AppName))
                     {
                         ModelState.AddModelError("", "Приложение с таким названием уже существует");
                         return View();
                     }
-                    else if (_apps.Select(x => x.Id).Contains(app.Id))
+                    else if (allApps.Select(x => x.Id).Contains(model.AppId))
                     {
                         ModelState.AddModelError("", "Приложение с таким Id уже существует");
                         return View();
                     }
-                    else if (app.Name == app.Id)
+                    else if (model.AppName == model.AppId)
                     {
                         ModelState.AddModelError("", "Название приложения должно отличаться от его Id");
                         return View();
@@ -87,21 +84,21 @@ namespace VolgaIT.Controllers
                     }
                 }
             }
-            return View();
+            return View(model: result);
         }
 
         #endregion
 
         #region [UserProfile]
         [HttpGet]
-        public async Task<IActionResult> UserProfile(IdentityUser user)
+        public async Task<IActionResult> UserProfile(User user)
         {
-            user = await _userManager.GetUserAsync(User); //получаем текущего пользователя
+            user = await _userService.GetUserAsync();
             return View(user);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProfile(IdentityUser user) //редактирование профиля пользователя
+        public async Task<IActionResult> EditProfile(User user)
         {
             if (user.Email == null)
             {
@@ -113,48 +110,17 @@ namespace VolgaIT.Controllers
             }
             else if (ModelState.IsValid)
             {
-                IdentityUser userUpdate = await _userManager.FindByIdAsync(user.Id); //получем текущего пользователя
-                if(userUpdate.Email == user.Email)
+                var result = await _userService.EditProfileAsync(user);
+                if (result)
                 {
-                    return View("UserProfile");
-                }
-                userUpdate.Email = user.Email; //меняем почту
-                userUpdate.UserName = user.Email; //меняем логин
-                var result = await _userManager.UpdateAsync(userUpdate); //обновляем пользователя в бд
-                if (result.Succeeded)
-                {
-                    ViewBag.resultSaveProfile = "Успешно сохранено"; //результат сохранения данных о пользователе
-                    await _signInManager.RefreshSignInAsync(userUpdate);
+                    ViewBag.resultSaveProfile = "Успешно сохранено";
                     return RedirectToAction("MainPageUser");
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Ошибка сохранения");
-                }
+                ModelState.AddModelError("", "Ошибка сохранения");
             }
             return View("UserProfile");
         }
         #endregion
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
-        }
-
-        public async Task<List<App>> GetUserListAppAsync() //получаем список приложения данного пользователя
-        {
-            IdentityUser user = await _userManager.GetUserAsync(User); //получаем текущего пользователя
-            List<UserApps> userApps = new List<UserApps>(await _db.UserApps.Where(x => x.UserId == user.Id).ToListAsync()); //поиск приложений по id
-                for (int i = 0; i < userApps.Count; i++)
-                {
-                    _userApps.Add(_apps.FirstOrDefault(x => x.Id == userApps[i].AppId)); //добавляем приложения с коллекцию
-                }
-                return _userApps;
-            return _userApps;
-        }
 
     }
 }

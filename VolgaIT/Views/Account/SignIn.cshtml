@@ -6,7 +6,7 @@
 
 <section class="sign-in-container">
     <h1 class="display-1">Авторизация</h1>
-    <form method="post" asp-controller="Account" class="sign-in-form">
+    <form method="post" asp-controller="Account" asp-action="SignIn" class="sign-in-form">
         <div class="input-sign-in-container">
             <input type="text" placeholder="Email" class="input-sign-in" asp-for="Email"/>
             <span asp-validation-for="Email" class="sign-in-valid"></span>
@@ -16,7 +16,7 @@
             <span asp-validation-for="Password" class="sign-in-valid"></span>
             <div asp-validation-summary="ModelOnly" class="sign-in-valid"></div>
         </div>
-        <input type="submit" value="Вход" asp-action="SignIn" class="input-btn-sign-in"/>
+        <input type="submit" value="Вход" class="input-btn-sign-in"/>
         <a asp-controller="Password" asp-action="ForgotPassword" class="link-forgot-password">Забыли пароль?</a>
     </form>
 </section>

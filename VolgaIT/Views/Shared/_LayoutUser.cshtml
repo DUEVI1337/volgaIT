@@ -19,11 +19,11 @@
             <div>
                 <a href="/UserActions/MainPageUser" class="nav-item">Главная</a>
                 <a href="/UserActions/ListApp" class="nav-item">Список приложений</a>
-                <a href="/UserActions/AddApp" class="nav-item">Добавить приложение</a>
+                <a href="/UserActions/AddUserApp" class="nav-item">Добавить приложение</a>
             </div>
 
             <div>
-                <form method="post" asp-controller="UserActions" asp-action="Logout">
+                <form method="post" asp-controller="Account" asp-action="Logout">
                     <input type="submit" value="Выход" class="nav-item" id="nav-item-exit-form"/>
                 </form>
             </div>
