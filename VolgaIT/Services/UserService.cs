@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using VolgaIT.Data.Repository.Interface;
 using VolgaIT.Models;
+using VolgaIT.Models.ViewModels;
 using VolgaIT.Services.Interface;
 
 namespace VolgaIT.Services
@@ -27,11 +28,11 @@ namespace VolgaIT.Services
             return user;
         }
 
-        public async Task<bool> EditProfileAsync(User user)
+        public async Task<bool> EditProfileAsync(UpdateProfileViewModel model)
         {
-            User userUpdate = await _userManager.FindByIdAsync(user.Id);
-            userUpdate.Email = user.Email;
-            userUpdate.UserName = user.Email;
+            User userUpdate = await _userManager.FindByIdAsync(model.IdUser);
+            userUpdate.Email = model.NewEmail;
+            userUpdate.UserName = model.NewEmail;
             var result = await _userManager.UpdateAsync(userUpdate);
             if (result.Succeeded)
             {

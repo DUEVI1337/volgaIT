@@ -28,14 +28,23 @@ builder.Services.AddIdentity<User, IdentityRole>(opt=>
     opt.Password.RequireLowercase = false;
 }).AddEntityFrameworkStores<DataContext>().AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IAccountService,AccountService>()
+builder.Services.AddScoped<IAccountService, AccountService>()
                 .AddScoped<IPasswordService, PasswordService>()
+
+                .AddScoped<IUserRepository, UserRepository>()
                 .AddScoped<IUserService, UserService>()
-                .AddScoped<IAppService, AppService>()
-                .AddScoped<IUserAppsService, UserAppsService>()
-                .AddScoped<IUserAppsRepository, UserAppsRepository>()
+
                 .AddScoped<IAppRepository, AppRepository>()
-                .AddScoped<IUserRepository, UserRepository>();
+                .AddScoped<IAppService, AppService>()
+
+                .AddScoped<IUserAppsRepository, UserAppsRepository>()
+                .AddScoped<IUserAppsService, UserAppsService>()
+
+                .AddScoped<IEventRepository, EventRepository>()
+                .AddScoped<IEventService, EventService>()
+
+                .AddScoped<IRequestRepository, RequestRepository>()
+                .AddScoped<IRequestAppService, RequestAppService>();
 
 var app = builder.Build();
 

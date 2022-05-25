@@ -1,30 +1,31 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VolgaIT.Data;
 using VolgaIT.Models;
+using VolgaIT.Services.Interface;
 
 namespace VolgaIT.Controllers
 {
     public class AppController : Controller
     {
-        private DataContext _db;
-        private List<Event> _eventList;
+        private readonly IRequestAppService _requestService;
+        private readonly IAppService _appService;
+        private readonly IEventService _eventService;
 
-        public AppController(DataContext context)
+        public AppController(IAppService appService, IRequestAppService requestService, IEventService eventService)
         {
-            _db = context;
-            _eventList = _db.Events.ToList();
+            _requestService = requestService;
+            _appService = appService;
+            _eventService = eventService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRequest(string id, string nameEvent, string bonusInfo)
+        public async Task<IActionResult> CreateRequest(string appId, string nameEvent, string bonusInfo)
         {
             try
             {
-                App app = await _db.Apps.FindAsync(id);
-                RequestUser requestUser = new RequestUser { AppId = app.Id,  EventId = _eventList.FirstOrDefault(x => x.Name == nameEvent).Id, BonusInfo = bonusInfo};
-                await _db.RequestUsers.AddAsync(requestUser);
-                await _db.SaveChangesAsync();
+                App app = await _appService.GetAppByIdAsync(appId);
+                Event eventApp = await _eventService.GetEventByNameAsync(nameEvent);
+                await _requestService.CreateRequest(appId, eventApp.Id, bonusInfo);
                 return Ok();
             }
             catch (Exception e)

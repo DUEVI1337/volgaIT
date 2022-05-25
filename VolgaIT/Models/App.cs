@@ -18,5 +18,7 @@ namespace VolgaIT.Models
         public DateTime DateCreate { get; set; } = DateTime.Now;
 
         public ICollection<UserApp> UsersApps { get; set; }
+
+        public ICollection<RequestUser> RequestsUsers { get; set; }
     }
 }

@@ -32,8 +32,8 @@
                         <td>@Model[i].Name</td>
                         <td>@Model[i].DateCreate</td>
                         <td>
-                            <a asp-action="StatisticsApp" asp-controller="AppsActions" asp-route-id="@Model[i].Id">Статистика</a>
-                            <a asp-action="Settings" asp-controller="AppsActions" asp-route-id="@Model[i].Id">Настройки</a>
+                            <a asp-action="StatisticsApp" asp-controller="AppsActions" asp-route-appId="@Model[i].Id">Статистика</a>
+                            <a asp-action="Settings" asp-controller="AppsActions" asp-route-appId="@Model[i].Id">Настройки</a>
                         </td>
                     </tr>	
                 }

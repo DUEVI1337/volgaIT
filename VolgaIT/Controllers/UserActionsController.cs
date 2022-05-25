@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VolgaIT.Models;
@@ -13,19 +12,26 @@ namespace VolgaIT.Controllers
     {
         private readonly IUserService _userService;
         private readonly IAppService _appService;
+        private readonly IAccountService _accountService;
         private readonly IUserAppsService _userAppsService;
 
-        public UserActionsController(IUserService userService, IUserAppsService userAppsService, IAppService appService)
+        public UserActionsController(IUserService userService, IUserAppsService userAppsService, IAppService appService, IAccountService accountService)
         {
             _userService = userService;
             _userAppsService = userAppsService;
             _appService = appService;
+            _accountService = accountService;
          }
 
         [HttpGet]
         public async Task<IActionResult> MainPageUser()
         {
             var user = await _userService.GetUserAsync();
+            if(user==null)
+            {
+                await _accountService.LogoutAsync();
+                return RedirectToAction("Index", "Home");
+            }
             return View(user.UsersApps.Count());
         }
 
@@ -33,7 +39,7 @@ namespace VolgaIT.Controllers
         public async Task<IActionResult> ListApp()
         {
             var user = await _userService.GetUserAsync();
-            var userApps = await _appService.GetAllUserApp(user.UsersApps.Select(x=>x.AppsId).ToList());
+            var userApps = await _appService.GetAppRangeAsync(user.UsersApps.Select(x=>x.AppsId).ToList());
             return View(userApps);
         }
 
@@ -93,33 +99,27 @@ namespace VolgaIT.Controllers
 
         #region [UserProfile]
         [HttpGet]
-        public async Task<IActionResult> UserProfile(User user)
+        public async Task<IActionResult> UserProfile(UpdateProfileViewModel model)
         {
-            user = await _userService.GetUserAsync();
-            return View(user);
+            User user = await _userService.GetUserAsync();
+            model.IdUser = user.Id;
+            model.NewEmail = user.Email;
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProfile(User user)
+        public async Task<IActionResult> EditProfile(UpdateProfileViewModel model)
         {
-            if (user.Email == null)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Поле 'Почта' не может быть пустым");
-            }
-            else if (!user.Email.Contains('@'))
-            {
-                ModelState.AddModelError("", "Неккоректная электронная почта");
-            }
-            else if (ModelState.IsValid)
-            {
-                var result = await _userService.EditProfileAsync(user);
+                var result = await _userService.EditProfileAsync(model);
                 if (result)
                 {
-                    ViewBag.resultSaveProfile = "Успешно сохранено";
                     return RedirectToAction("MainPageUser");
                 }
                 ModelState.AddModelError("", "Ошибка сохранения");
             }
+            ModelState.AddModelError("", "Ошибка сохранения");
             return View("UserProfile");
         }
         #endregion

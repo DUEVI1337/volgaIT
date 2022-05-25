@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VolgaIT.Data;
 
@@ -11,9 +12,10 @@ using VolgaIT.Data;
 namespace VolgaIT.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220525041349_AddRelationShipAppRequestUser")]
+    partial class AddRelationShipAppRequestUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,7 +361,7 @@ namespace VolgaIT.Migrations
                         .IsRequired();
 
                     b.HasOne("VolgaIT.Models.Event", "Event")
-                        .WithMany("RequestsUsers")
+                        .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -393,11 +395,6 @@ namespace VolgaIT.Migrations
                     b.Navigation("RequestsUsers");
 
                     b.Navigation("UsersApps");
-                });
-
-            modelBuilder.Entity("VolgaIT.Models.Event", b =>
-                {
-                    b.Navigation("RequestsUsers");
                 });
 
             modelBuilder.Entity("VolgaIT.Models.User", b =>

@@ -1,8 +1,6 @@
- using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VolgaIT.Models;
-using VolgaIT.Services;
 using VolgaIT.Services.Interface;
 
 namespace VolgaIT.Controllers

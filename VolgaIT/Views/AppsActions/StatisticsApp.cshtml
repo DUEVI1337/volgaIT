@@ -37,8 +37,8 @@
             $("#datafiltertime").change(function () {
                 $.ajax({
                     type: "GET",
-                    url: "/AppsActions/TimeFilter",  //remember change the controller to your owns.  
-                    data: {timeFilter: $(this).val(), id: $("#id").val()},
+                    url: "/AppsActions/TimeFilterRequestApp",  //remember change the controller to your owns.  
+                    data: {timeFilter: $(this).val(), appId: $("#id").val()},
                     success: function (data) {
                         $("#eventContainer").html("");
                         $("#eventContainer").html(data);
@@ -49,6 +49,4 @@
                 });
             });
         });
-    </script>
-
-}
+</script>
