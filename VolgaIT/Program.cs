@@ -44,7 +44,9 @@ builder.Services.AddScoped<IAccountService, AccountService>()
                 .AddScoped<IEventService, EventService>()
 
                 .AddScoped<IRequestRepository, RequestRepository>()
-                .AddScoped<IRequestAppService, RequestAppService>();
+                .AddScoped<IRequestAppService, RequestAppService>()
+                
+                .AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();
 

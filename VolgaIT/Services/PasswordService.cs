@@ -24,12 +24,6 @@ namespace VolgaIT.Services
             return null;
         }
 
-        public async Task SendEmailResetPassword(string email, string callbackUrl)
-        {
-            EmailServices emailServices = new EmailServices();
-            await emailServices.SendEmailAsync(email, "Восстановление Пароля", $"Для того чтобы создать новый пароль перейдите по <a href='{callbackUrl}'>ссылке</a>");
-        }
-
         public async Task ResetPasswordAsync(ResetPasswordViewModel model)
         {
             User user = await _userManager.FindByEmailAsync(model.Email);

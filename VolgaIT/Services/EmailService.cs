@@ -1,9 +1,10 @@
 using MailKit.Net.Smtp;
 using MimeKit;
+using VolgaIT.Services.Interface;
 
 namespace VolgaIT.Services
 {
-    public class EmailServices
+    public class EmailService : IEmailService
     {
         public async Task SendEmailAsync(string emailUser, string subject, string message)
         {

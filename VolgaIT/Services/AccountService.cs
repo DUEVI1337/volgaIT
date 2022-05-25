@@ -18,19 +18,19 @@ namespace VolgaIT.Services
         public async Task<bool> RegisterUserAsync(RegisterViewModel model)
         {
             User user = await _userManager.FindByEmailAsync(model.Email);
-            if (user != null)
+            if (user == null)
             {
-                return false;
+                user = new User { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (!result.Succeeded)
+                {
+                    return false;
+                }
+                await _userManager.AddToRoleAsync(user, "user");
+                await _signInManager.SignInAsync(user, false);
+                return true;
             }
-            user = new User { UserName = model.Email, Email = model.Email };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-            {
-                return false;
-            }
-            await _userManager.AddToRoleAsync(user, "user");
-            await _signInManager.SignInAsync(user, false);
-            return true;
+            return false;
         }
 
         public async Task<bool> SignInAsync(SignInViewModel model)

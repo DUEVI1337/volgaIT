@@ -11,7 +11,7 @@ namespace VolgaIT.Data
             {
                 await roleManager.CreateAsync(new IdentityRole("user"));
             }
-            if(!context.Events.Any())
+            else if(!context.Events.Any())
             {
                 List<Event> events = new List<Event>
                 {

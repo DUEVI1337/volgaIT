@@ -9,11 +9,13 @@ namespace VolgaIT.Controllers
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true, Duration = 0)]
     public class PasswordController : Controller
     {
+        private readonly IEmailService _emailService;
         private readonly IPasswordService _passwordService;
 
-        public PasswordController(IPasswordService passwordService)
+        public PasswordController(IPasswordService passwordService, IEmailService emailService)
         {
             _passwordService = passwordService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -34,7 +36,7 @@ namespace VolgaIT.Controllers
                     return RedirectToAction("SignIn", "Account");
                 }
                 var callbackUrl = Url.Action("NewPassword", "Password", new { Email = model.Email, Token = result, lifeTime = DateTime.Now.AddMinutes(20) }, protocol: HttpContext.Request.Scheme);
-                await _passwordService.SendEmailResetPassword(model.Email, callbackUrl);
+                await _emailService.SendEmailAsync(model.Email, "Восстановление Пароля", $"Для того чтобы создать новый пароль перейдите по <a href='{callbackUrl}'>ссылке</a>");
                 return RedirectToAction("SignIn", "Account");
             }
             return View();
