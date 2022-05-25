@@ -18,12 +18,10 @@ namespace VolgaIT.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<UserApps>().HasKey(x => new { x.UserId, x.AppId });
-            //base.OnModelCreating(modelBuilder);
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<UserApp>().HasKey(x=>new {x.UsersId, x.AppsId});
-            //modelBuilder.Entity<App>().Property(x => x.DateCreate).HasColumnType("timestamp");
-            //modelBuilder.Entity<RequestUser>().Property(x => x.CreatedDate).HasColumnType("timestamp");
+            modelBuilder.Entity<UserApp>().HasKey(x => new { x.UsersId, x.AppsId });
+            modelBuilder.Entity<App>().Property(x => x.DateCreate).HasColumnType("timestamp");
+            modelBuilder.Entity<RequestUser>().Property(x => x.CreatedDate).HasColumnType("timestamp");
         }
     }
 }
