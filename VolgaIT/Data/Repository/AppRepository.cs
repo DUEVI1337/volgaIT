@@ -18,9 +18,10 @@ namespace VolgaIT.Data.Repository
             return await _db.Apps.ToListAsync();
         }
 
-        public async Task<List<App>> GetAllUserApp(string userId)
+        public async Task<List<App>> GetAllUserApp(List<string> appsId)
         {
-            return _db.Apps.Where(x=>x.UsersApps.ToList() ==).ToListAsync();
+
+            return await _db.Apps.Where(x=>appsId.Contains(x.Id)).ToListAsync();
         }
 
         public async Task AddAppAsync(App app)

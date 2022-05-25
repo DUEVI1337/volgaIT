@@ -18,10 +18,11 @@ namespace VolgaIT.Services
             return await _repoApp.GetAllAppAsync();
         }
 
-        //public async Task<List<App>> GetAllUserApp(string userId)
-        //{
-        //    var userApps = await _repoApp.GetAllUserApp(userId);
-        //}
+        public async Task<List<App>> GetAllUserApp(List<string> appsId)
+        {
+            var userApps = await _repoApp.GetAllUserApp(appsId);
+            return userApps;
+        }
 
         public async Task AddAppAsync(AddAppViewModel model)
         {

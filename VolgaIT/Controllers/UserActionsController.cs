@@ -33,10 +33,8 @@ namespace VolgaIT.Controllers
         public async Task<IActionResult> ListApp()
         {
             var user = await _userService.GetUserAsync();
-            var appAll = await _appService.GetAllAppsAsync();
-            var userApps = appAll.Where(x=>x.Id == user.UsersApps.ToList().ForEach(x=>x.AppsId));
-            //var userApps = new List<App>(await _appService.GetAllUserApp(user.Id)); 
-            return View(user.UsersApps.ToList());
+            var userApps = await _appService.GetAllUserApp(user.UsersApps.Select(x=>x.AppsId).ToList());
+            return View(userApps);
         }
 
         #region [AddApp]
