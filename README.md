@@ -26,8 +26,7 @@
 ![image](https://user-images.githubusercontent.com/100204371/165749369-0694f4ee-20a6-45de-85df-f02743f4eed0.png)
 
 
-    4. Наш проект развернут и готов к работе, осталось посмотреть порт нашего приложения
-    в Docker и перейти по следующему URL: https://localhost:<порт_приложения>/
+    4. Наш проект развернут и готов к работе, осталось перейти по следующему URL: https://localhost:8081
     
 ![image](https://user-images.githubusercontent.com/100204371/165749917-d61029b1-d511-4523-a848-1a677c231473.png)
 
@@ -75,8 +74,8 @@
     3. В следующее указанной области нужно написать URL нашего запущенного сайта, дополнительно указать имя контроллера,
     в котором реализован нужный нам метод (App),
     название самого метода (CreateRequest) и указать параметры метода (id, nameEvent, bonusInfo) где,
-    "id" - id нашего приложения, "nameEvent" - имя события, "bonusInfo" - дополнительная информация.
-    (https://localhost:<порт>/App/CreateRequest?id=<id_приложения>&nameEvent=<имя_события>&bonusInfo=<дополнительная_информация>)
+    "appId" - id нашего приложения, "nameEvent" - имя события, "bonusInfo" - дополнительная информация.
+    (https://localhost:<порт>/App/CreateRequest?appId=<id_приложения>&nameEvent=<имя_события>&bonusInfo=<дополнительная_информация>)
     
 ![image](https://user-images.githubusercontent.com/100204371/165756794-284776de-486d-4554-b7fe-0121e9ee5b1b.png)
     
