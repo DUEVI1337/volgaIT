@@ -1,0 +1,22 @@
+@using VolgaIT.Models.ViewModels
+@model UpdateProfileViewModel
+@{
+    Layout = "_LayoutUser";
+}
+
+<section class="profile">
+    <h1 class="display-1">Профиль</h1>
+    <form method="post" asp-controller="UserActions">
+        <div class="container-one-input">
+            <input type="hidden" asp-for="IdUser"/>
+            <div>
+                <p class="lead">Почта: </p>
+                <input type="text" placeholder="email" asp-for="NewEmail" class="input-profile"/>
+            </div>
+            <div asp-validation-summary="@ValidationSummary.ModelOnly" class="valid-save-email"></div>
+        </div>
+        <div class="container-btn-profile">
+            <input type="submit" value="Сохранить" asp-action="EditProfile" class="btn-save-profile"/>
+        </div>
+    </form>    
+</section>

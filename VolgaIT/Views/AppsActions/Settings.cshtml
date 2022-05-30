@@ -1,0 +1,37 @@
+@using VolgaIT.Models.ViewModels
+@model UpdateAppViewModel
+@{
+    Layout = "_LayoutUser";
+}
+
+<section class="settings">
+    <h1 class="display-1">Настройки</h1>
+    <form method="post">
+        <div class="container-input">
+            <div>
+                <p class="lead">Идентификатор приложения:</p>
+                <input type="text" readonly asp-for="@Model.AppId" class="input-change-info"/>
+            </div>
+        </div>
+        <div class="container-input">
+            <div>
+                <p class="lead">Название приложения:</p>
+                <input type="text" asp-for="@Model.AppName" class="input-name-info"/>
+            </div>
+            <span asp-validation-for="@Model.AppName" class="change-app-valid"></span>
+        </div>
+        <div class="container-input">
+            <div>
+                <p class="lead">Дата создания:</p>
+                <input type="text" readonly asp-for="@Model.AddDateCreate" class="input-change-info"/>
+            </div>
+        </div>
+        <div asp-validation-summary="ModelOnly" class="change-app-valid-model"></div>
+        <div class="container-btn">
+            <input type="submit" value="Сохранить" asp-action="UpdateApp" class="btn-change-info"/>
+            <input type="submit" value="Удалить" asp-action="DeleteApp" asp-route-appId="@Model.AppId" class="btn-change-info"/>
+        </div>
+        <p class="update-app-result">@ViewBag.resultUpdateApp</p>
+        @*<button asp-action="DeleteApp" asp-route-id="@Model.Id">Удалить</button> *@
+    </form>
+</section>

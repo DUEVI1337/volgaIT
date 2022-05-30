@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  volgait:
+    image: ${DOCKER_REGISTRY-}volgait
+    ports:
+        - 0.0.0.0:8081:443
+    build:
+      context: .
+      dockerfile: VolgaIT/Dockerfile
+    links: 
+        - postgres
+  postgres:
+    image: postgres:14.2-alpine
+    environment:
+      POSTGRES_DB: "volgadb"
+      POSTGRES_USER: "volgaUser"
+      POSTGRES_PASSWORD: "volga2022"
+    ports:
+      - "5432:5432"

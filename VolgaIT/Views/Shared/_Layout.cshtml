@@ -1,0 +1,37 @@
+﻿
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - VolgaIT</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        @*<link rel="stylesheet" href="~/VolgaIT.styles.css" asp-append-version="true" />*@
+    </head>
+    <body>
+        <header>
+            <div class="nav-header">
+                <nav class="navigation">
+
+                    <div class="logo">
+                        <a href="/Home/Index">VolgaIT</a>
+                    </div>
+
+                    <div>
+                        <a href="/Home/Index" class="nav-item">Главная</a>
+                    </div>
+
+                    <div>
+                        <a href="/Account/SignIn" class="nav-item">Авторизация</a>
+                        <a href="/Account/Register" class="nav-item" id="nav-item-register">Регистрация</a>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main role="main">
+            @RenderBody()
+        </main>
+    </body>
+    </html>
