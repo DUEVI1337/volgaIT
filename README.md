@@ -5,9 +5,10 @@
     
     1. После скачивания и распаковки архива с проектом необходимо открыть командную строку и перейти
        в папку с проектом до .sln файла включительно (выполнить команду "cd <пути_к_папке_с_проектом>").
-![image](https://user-images.githubusercontent.com/100204371/165747267-6cfc7066-6043-4f14-b7cb-5d53ce5c3807.png)
+       
+![1 1](https://user-images.githubusercontent.com/100204371/170924316-a1a352d8-cd25-48be-8db4-3fe3a194ae2e.jpg)
 
-![image](https://user-images.githubusercontent.com/100204371/165747842-e5e70e3d-a1b7-4900-91d9-291428e26676.png)
+![1 2](https://user-images.githubusercontent.com/100204371/170924340-8763ad6e-a0d3-4ad5-a552-6bf17fb75027.jpg)
 
     2. Запустите Docker desktop, если он еще не запущен.
     
@@ -17,23 +18,19 @@
             docker-compose up
             ...//установка образов
             
-![image](https://user-images.githubusercontent.com/100204371/165748249-16f132b8-a8dc-45ae-bb55-e09e6f833aa4.png)
+![3 1](https://user-images.githubusercontent.com/100204371/170924373-56b69dd5-558d-49d3-9243-6c78d6d2ce29.jpg)
 
-![image](https://user-images.githubusercontent.com/100204371/165748660-2f643876-f4cb-4d34-941e-1a6e46b14ce2.png)
+![3 2](https://user-images.githubusercontent.com/100204371/170924390-1c3bf0ec-b957-4458-a909-a645f5d6b32d.jpg)
 
      Если мы перейдем в Docker, то увидим наши запущенные контейнеры с приложение и СУБД. 
     
-![image](https://user-images.githubusercontent.com/100204371/165749369-0694f4ee-20a6-45de-85df-f02743f4eed0.png)
-
+![4](https://user-images.githubusercontent.com/100204371/170924427-3f98be81-c6ea-48a5-b13a-5ee0024ca30e.jpg)
 
     4. Наш проект развернут и готов к работе, осталось перейти по следующему URL: https://localhost:8081
-    
-![image](https://user-images.githubusercontent.com/100204371/165749917-d61029b1-d511-4523-a848-1a677c231473.png)
 
     5. Готово!
 
-![image](https://user-images.githubusercontent.com/100204371/165750365-da5530c2-9347-49e5-b702-97c5ee1122fd.png)
-
+![5](https://user-images.githubusercontent.com/100204371/170924453-6f0185d3-d7c8-4dac-9396-78f957e0b77a.jpg)
 
 # Реализованный функционал.
 
@@ -58,8 +55,8 @@
     
 # Инструкция по отправке запросов к сервису для отслеживания статистики.
     
-    Для имитации работающего приложения мы будем использовать сервис по тестированию API - "Postman", из этого сервиса будем отправлять
-    запросы к нашему сайту.
+    Для имитации работающего приложения мы будем использовать сервис по тестированию API - "Postman",
+    из этого сервиса будем отправлять запросы к нашему сайту.
     
     Для тестирования нашего метода необходимо:
     
@@ -73,9 +70,9 @@
 
     3. В следующее указанной области нужно написать URL нашего запущенного сайта, дополнительно указать имя контроллера,
     в котором реализован нужный нам метод (App),
-    название самого метода (CreateRequest) и указать параметры метода (id, nameEvent, bonusInfo) где,
+    название самого метода (CreateRequest) и указать параметры метода (appId, nameEvent, bonusInfo) где,
     "appId" - id нашего приложения, "nameEvent" - имя события, "bonusInfo" - дополнительная информация.
-    (https://localhost:<порт>/App/CreateRequest?appId=<id_приложения>&nameEvent=<имя_события>&bonusInfo=<дополнительная_информация>)
+    (https://localhost:8081/App/CreateRequest?appId=<id_приложения>&nameEvent=<имя_события>&bonusInfo=<дополнительная_информация>)
     
 ![image](https://user-images.githubusercontent.com/100204371/165756794-284776de-486d-4554-b7fe-0121e9ee5b1b.png)
     
@@ -90,6 +87,6 @@
 ![image](https://user-images.githubusercontent.com/100204371/165759855-48de8e39-42f0-4c7c-bd87-3220aaafa63e.png)
     
     6. Просмотреть статистику мы можем на странице со списком наших приложений и выбрав соответсвующее приложение перейти на страницу "статистика"
-    (ссылка https://localhost:<порт>/AppsActions/StatisticsApp/<id приложения>)
+    (ссылка https://localhost:8081/AppsActions/StatisticsApp/<id приложения>)
 
 
